@@ -22,3 +22,9 @@ Create a superuser to login to the admin:
 ```bash
 docker-compose run --rm web ./manage.py createsuperuser
 ```
+
+Run tests:
+
+```bash
+docker-compose run --rm web python manage.py test
+```
