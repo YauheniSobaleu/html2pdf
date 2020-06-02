@@ -8,4 +8,3 @@ class HtmlFileInputSerializer(serializers.Serializer):
 class UrlInputSerializer(serializers.Serializer):
     url = serializers.URLField()
     filename = serializers.CharField(required=False)
-
