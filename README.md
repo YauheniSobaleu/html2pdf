@@ -28,3 +28,8 @@ Run tests:
 ```bash
 docker-compose run --rm web python manage.py test
 ```
+
+## TODO
+- Write more tests
+- Generate pdf files using the celery tasks.
+- Refactor the code to omit duplication.
