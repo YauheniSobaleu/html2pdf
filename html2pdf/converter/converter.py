@@ -39,6 +39,9 @@ def html_to_pdf(html: str) -> IO:
 
 
 def filename_from_url(url: str) -> str:
-    """Generate pdf filename using a hostname of a URL."""
+    """
+    Generate pdf filename using a hostname of a URL.
+    If no hostname is provided, return 'default.pdf' as filename.
+    """
     parsed = urlparse(url)
-    return parsed.hostname + '.pdf'
+    return (parsed.hostname or 'default') + '.pdf'
