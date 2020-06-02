@@ -7,10 +7,13 @@ from rest_framework.authtoken import views
 from rest_framework.routers import DefaultRouter
 
 from .users.views import UserViewSet, UserCreateViewSet
+from .converter.views import HtmlFileConverterViewSet, UrlConverterViewSet
 
 router = DefaultRouter()
 router.register(r'users', UserViewSet)
 router.register(r'users', UserCreateViewSet)
+router.register(r'convert_file', HtmlFileConverterViewSet, basename='convert_file')
+router.register(r'convert_url', UrlConverterViewSet, basename='convert_url')
 
 urlpatterns = [
     path('admin/', admin.site.urls),

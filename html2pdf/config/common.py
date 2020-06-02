@@ -25,7 +25,7 @@ class Common(Configuration):
 
         # Your apps
         'html2pdf.users',
-
+        'html2pdf.converter',
     )
 
     # https://docs.djangoproject.com/en/2.0/topics/http/middleware/
