@@ -1,9 +1,10 @@
-import unittest
-from nose.tools import ok_, eq_
-from unittest.mock import patch
-from tempfile import NamedTemporaryFile
+import io
+from pathlib import Path
 
-from ..converter import filename_from_url
+import unittest
+from nose.tools import ok_, eq_, raises
+
+from ..converter import filename_from_url, html_to_pdf, url_to_pdf, ConvertingError
 
 
 class TestGeneratingFilenameFromUrl(unittest.TestCase):
@@ -19,16 +20,25 @@ class TestGeneratingFilenameFromUrl(unittest.TestCase):
         eq_(expected, filename_from_url(given))
 
 
-# class TestConvertingUrlToPdf(unittest.TestCase):
-#
-#     def setUp(self):
-#         self.html = open('data/gbe.html').read()
-#         self.tmpfile = NamedTemporaryFile('w+b')
-#
-#     def tearDown(self):
-#         self.tmpfile.close()
-#
-#     @patch('pdfkit.from_url')
-#     @patch('NamedTemporaryFile')
-#     def test_converting_html_file_to_pdf(self, tmpfile_mock, pdfkit_mock):
-#         ...
+class TestConvertingUrlToPdf(unittest.TestCase):
+
+    def test_converting_valid_url_to_pdf(self):
+        given = "https://gobyexample.com"
+        pdf = url_to_pdf(given)
+        ok_(isinstance(pdf, io.IOBase))
+
+    @raises(ConvertingError)
+    def test_converting_invalid_url_to_pdf(self):
+        given = "invalid url"
+        url_to_pdf(given)
+
+
+class TestConvertingHtmlToPdf(unittest.TestCase):
+
+    def setUp(self):
+        html_file = Path('.') / 'html2pdf' / 'converter' / 'test' / 'data' / 'gbe.html'
+        self.html = html_file.read_text()
+
+    def test_converting_html_to_pdf(self):
+        pdf = html_to_pdf(self.html)
+        ok_(isinstance(pdf, io.IOBase))
