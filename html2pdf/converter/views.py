@@ -1,10 +1,11 @@
 from typing import IO
 
 from django.http import FileResponse
+from rest_framework.exceptions import ValidationError
 from rest_framework.parsers import MultiPartParser
 from rest_framework.viewsets import ViewSet
 
-from .converter import filename_from_url, html_to_pdf, url_to_pdf
+from .converter import filename_from_url, html_to_pdf, url_to_pdf, ConvertingError
 from .serializers import HtmlFileInputSerializer, UrlInputSerializer
 
 
@@ -16,7 +17,11 @@ class HtmlFileConverterViewSet(ViewSet):
         serializer.is_valid(raise_exception=True)
 
         file: IO = serializer.validated_data['file']
-        pdf = html_to_pdf(str(file.read()))
+        content = str(file.read())
+        try:
+            pdf = html_to_pdf(content)
+        except ConvertingError:
+            raise ValidationError('The file is of inappropriate type or corrupted.')
 
         response = FileResponse(pdf)
         response["Content-Type"] = 'application/pdf'
@@ -30,7 +35,10 @@ class UrlConverterViewSet(ViewSet):
         serializer.is_valid(raise_exception=True)
 
         url: str = serializer.validated_data['url']
-        pdf = url_to_pdf(url)
+        try:
+            pdf = url_to_pdf(url)
+        except ConvertingError:
+            raise ValidationError('The url is invalid or unreachable.')
         filename = serializer.validated_data.get('filename') or filename_from_url(url)
 
         response = FileResponse(pdf, filename=filename)
